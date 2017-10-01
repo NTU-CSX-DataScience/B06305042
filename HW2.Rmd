@@ -1,0 +1,62 @@
+---
+title: "HW2"
+author: "B06305042"
+date: "2017年10月1日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+library(dplyr)
+data <- read.csv("customer.csv", header=T, sep=",")
+#1教育程度與收入是否有關
+plot(x=data$edcat, y=data$income)
+平均收入為59.89
+edcat1income = filter(data,edcat==1,income>=59.89)
+edcat2income = filter(data,edcat==2,income>=59.89)
+edcat3income = filter(data,edcat==3,income>=59.89)
+edcat4income = filter(data,edcat==4,income>=59.89)
+edcat5income = filter(data,edcat==5,income>=59.89)
+教育程度為1的人共有5人高於平均
+教育程度為2的人共有10人高於平均
+教育程度為3的人共有5人高於平均
+教育程度為4的人共有11人高於平均
+教育程度為5的人共有6人高於平均
+有37%的人收入高於平均值
+從圖表和數據可得知教育程度與收入並無太大關聯
+#2區域收入調查
+quantile(data$income)
+找尋收入為四分位距75%以上的人
+region1income = filter(data,region==1,income>=74.25)
+region2income = filter(data,region==2,income>=74.25)
+region3income = filter(data,region==3,income>=74.25)
+region4income = filter(data,region==4,income>=74.25)
+region5income = filter(data,region==5,income>=74.25)
+從結果可得知區域3有較多人符合
+#不同性別喜好貓狗程度
+gender1dog = filter(data,gender==1,pets_dogs>=1)
+gender0dog = filter(data,gender==0,pets_dogs>=1)
+gender1cat = filter(data,gender==1,pets_cats>=1)
+gender0cat = filter(data,gender==0,pets_cats>=1)
+假設gender0為男性 1為女性
+男性有養貓的人次為11
+男性有養狗的人次為5
+女性有養貓的人次為11
+女性有養狗的人次為17
+由此可推測女性女性市場較大
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
