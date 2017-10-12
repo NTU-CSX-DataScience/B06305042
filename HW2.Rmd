@@ -1,50 +1,50 @@
 ---
-title: "HW2"
+  title: "HW2"
 author: "B06305042"
-date: "2017¦~10¤ë1¤é"
+date: "2017å¹´10æœˆ1æ—¥"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
+  
+  ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 library(dplyr)
 data <- read.csv("customer.csv", header=T, sep=",")
-#1±Ğ¨|µ{«×»P¦¬¤J¬O§_¦³Ãö
+#1æ•™è‚²ç¨‹åº¦èˆ‡æ”¶å…¥æ˜¯å¦æœ‰é—œ
 plot(x=data$edcat, y=data$income)
-¥­§¡¦¬¤J¬°59.89
+å¹³å‡æ”¶å…¥ç‚º59.89
 edcat1income = filter(data,edcat==1,income>=59.89)
 edcat2income = filter(data,edcat==2,income>=59.89)
 edcat3income = filter(data,edcat==3,income>=59.89)
 edcat4income = filter(data,edcat==4,income>=59.89)
 edcat5income = filter(data,edcat==5,income>=59.89)
-±Ğ¨|µ{«×¬°1ªº¤H¦@¦³5¤H°ª©ó¥­§¡
-±Ğ¨|µ{«×¬°2ªº¤H¦@¦³10¤H°ª©ó¥­§¡
-±Ğ¨|µ{«×¬°3ªº¤H¦@¦³5¤H°ª©ó¥­§¡
-±Ğ¨|µ{«×¬°4ªº¤H¦@¦³11¤H°ª©ó¥­§¡
-±Ğ¨|µ{«×¬°5ªº¤H¦@¦³6¤H°ª©ó¥­§¡
-¦³37%ªº¤H¦¬¤J°ª©ó¥­§¡­È
-±q¹Ïªí©M¼Æ¾Ú¥i±oª¾±Ğ¨|µ{«×»P¦¬¤J¨ÃµL¤Ó¤jÃöÁp
-#2°Ï°ì¦¬¤J½Õ¬d
+æ•™è‚²ç¨‹åº¦ç‚º1çš„äººå…±æœ‰5äººé«˜æ–¼å¹³å‡
+æ•™è‚²ç¨‹åº¦ç‚º2çš„äººå…±æœ‰10äººé«˜æ–¼å¹³å‡
+æ•™è‚²ç¨‹åº¦ç‚º3çš„äººå…±æœ‰5äººé«˜æ–¼å¹³å‡
+æ•™è‚²ç¨‹åº¦ç‚º4çš„äººå…±æœ‰11äººé«˜æ–¼å¹³å‡
+æ•™è‚²ç¨‹åº¦ç‚º5çš„äººå…±æœ‰6äººé«˜æ–¼å¹³å‡
+æœ‰37%çš„äººæ”¶å…¥é«˜æ–¼å¹³å‡å€¼
+å¾åœ–è¡¨å’Œæ•¸æ“šå¯å¾—çŸ¥æ•™è‚²ç¨‹åº¦èˆ‡æ”¶å…¥ä¸¦ç„¡å¤ªå¤§é—œè¯
+#2å€åŸŸæ”¶å…¥èª¿æŸ¥
 quantile(data$income)
-§ä´M¦¬¤J¬°¥|¤À¦ì¶Z75%¥H¤Wªº¤H
+æ‰¾å°‹æ”¶å…¥ç‚ºå››åˆ†ä½è·75%ä»¥ä¸Šçš„äºº
 region1income = filter(data,region==1,income>=74.25)
 region2income = filter(data,region==2,income>=74.25)
 region3income = filter(data,region==3,income>=74.25)
 region4income = filter(data,region==4,income>=74.25)
 region5income = filter(data,region==5,income>=74.25)
-±qµ²ªG¥i±oª¾°Ï°ì3¦³¸û¦h¤H²Å¦X
-#¤£¦P©Ê§O³ß¦n¿ßª¯µ{«×
+å¾çµæœå¯å¾—çŸ¥å€åŸŸ3æœ‰è¼ƒå¤šäººç¬¦åˆ
+#ä¸åŒæ€§åˆ¥å–œå¥½è²“ç‹—ç¨‹åº¦
 gender1dog = filter(data,gender==1,pets_dogs>=1)
 gender0dog = filter(data,gender==0,pets_dogs>=1)
 gender1cat = filter(data,gender==1,pets_cats>=1)
 gender0cat = filter(data,gender==0,pets_cats>=1)
-°²³]gender0¬°¨k©Ê 1¬°¤k©Ê
-¨k©Ê¦³¾i¿ßªº¤H¦¸¬°11
-¨k©Ê¦³¾iª¯ªº¤H¦¸¬°5
-¤k©Ê¦³¾i¿ßªº¤H¦¸¬°11
-¤k©Ê¦³¾iª¯ªº¤H¦¸¬°17
-¥Ñ¦¹¥i±À´ú¤k©Ê¤k©Ê¥«³õ¸û¤j
+å‡è¨­gender0ç‚ºç”·æ€§ 1ç‚ºå¥³æ€§
+ç”·æ€§æœ‰é¤Šè²“çš„äººæ¬¡ç‚º11
+ç”·æ€§æœ‰é¤Šç‹—çš„äººæ¬¡ç‚º5
+å¥³æ€§æœ‰é¤Šè²“çš„äººæ¬¡ç‚º11
+å¥³æ€§æœ‰é¤Šç‹—çš„äººæ¬¡ç‚º17
+ç”±æ­¤å¯æ¨æ¸¬å¥³æ€§å¥³æ€§å¸‚å ´è¼ƒå¤§
 
 
 ```{r cars}
@@ -54,9 +54,10 @@ summary(cars)
 ## Including Plots
 
 You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
+  
+  ```{r pressure, echo=FALSE}
 plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# change to utf-8
