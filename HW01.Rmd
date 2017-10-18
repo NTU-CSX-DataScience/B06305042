@@ -5,6 +5,7 @@ date: "2017年10月14日"
 output: html_document
 ---
 library(dplyr)
+library(ggplot2)
 data = read.csv("titanic.csv", header=T, sep=",")
 
 #分析票價和生存率的關係
@@ -36,37 +37,31 @@ group_by(temp3,joined)
     
     
 #class等級與存活率的比較
-passenger <- data[data$class %in% c(1,2,3),]
-passenger <- passenger[!passenger$fare == 9999,]
-passenger <- passenger[!passenger$age == 9999,]
+passenger = data[data$class %in% c(1,3),]
+passenger = passenger[!passenger$fare == 9999,]
+passenger = passenger[!passenger$age == 9999,]
 head(passenger)
 
 Class1 = select(passenger, survival, class) %>%
   filter(class == 1)
-Class1alive <- sum(Class1$survival == 1) 
-Class1dead <- sum(Class1$survival == 0) 
-Class1total <- length(Class1$survival) 
-Class1survivalrate <- Class1alive / Class1total
+Class1alive = sum(Class1$survival == 1) 
+Class1dead = sum(Class1$survival == 0) 
+Class1total = length(Class1$survival) 
+Class1survivalrate = Class1alive / Class1total
 print (Class1survivalrate)
-Class2 <- select(passenger, survival, class) %>%
-  filter(class == 2)
-Class2alive <- sum(Class2$survival == 1) 
-Class2dead <- sum(Class2$survival == 0) 
-Class2total <- length(Class2$survival) 
-Class2survivalrate <- Class2alive / Class2total
-print (Class2survivalrate)
-Class3 <- select(passenger, survival, class) %>%
+Class3 = select(passenger, survival, class) %>%
   filter(class == 3)
-Class3alive <- sum(Class3$survival == 1) 
-Class3dead <- sum(Class3$survival == 0) 
-Class3total <- length(Class3$survival) 
-Class3survivalrate <- Class3alive / Class3total
+Class3alive = sum(Class3$survival == 1) 
+Class3dead = sum(Class3$survival == 0) 
+Class3total = length(Class3$survival) 
+Class3survivalrate = Class3alive / Class3total
 print (Class3survivalrate)
 
-CLASS <- data.frame(Class = c("Class1", "Class2", "Class3"),
-  survivalrate = c(Class1survivalrate, Class2survivalrate, Class3survivalrate))
+CLASS = data.frame(Class = c("Class1", "Class3"),
+  survivalrate = c(Class1survivalrate, Class3survivalrate))
 ggplot(data = CLASS, aes(x = Class, y = survivalrate, fill = Class)) + 
   geom_bar(stat = "identity")
+
 
              
 #由結果推論等級越高，存活率越大,且Class1和Class3存活率快相差3倍
