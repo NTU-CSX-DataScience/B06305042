@@ -1,0 +1,86 @@
+---
+title: "HW3"
+author: "B06305042"
+date: "2017年11月29日"
+output: html_document
+---
+#使用套件
+```{r}
+library(Rfacebook)
+library(NLP)
+library(tm)
+library(jiebaRD)
+library(jiebaR)
+library(RColorBrewer)
+library(wordcloud)
+library(wordcloud2)
+```
+#抓取臉書資料和文本清理
+```{r}
+token ="EAACEdEose0cBABkL5HLxGnI2BpRdIF0eDdbjbfo2Cfws2HJTWZBAn5Yk8mgiJMpmugYAp24Ipa90llgyBpEaNxIrwnvkc2HEiR2M5mzrFTZC3wtCqUi6Pi1KYS8br22m2UstmNJOr4MRWcSYAuVkYvDHloAfaqMm9h78UIFnH8O7MMEJu62FdAhjY2VoQzlPxppnDGTwZDZD"
+page.id = "152472278103133"
+page = getPage(page.id, token, n = 300)
+docs = Corpus(VectorSource(as.character(page[,3])))
+toSpace = content_transformer(function(x,pattern){
+  return (gsub(pattern," ",x))
+})
+docs <- tm_map(docs, toSpace, "※")
+docs <- tm_map(docs, toSpace, "◆")
+docs <- tm_map(docs, toSpace, "‧")
+docs <- tm_map(docs, toSpace, "的")
+docs <- tm_map(docs, toSpace, "我")
+docs <- tm_map(docs, toSpace, "也")
+docs <- tm_map(docs, toSpace, "他")
+docs <- tm_map(docs, toSpace, "是")
+docs <- tm_map(docs, toSpace, "就")
+docs <- tm_map(docs, toSpace, "你")
+docs <- tm_map(docs, toSpace, "啊")
+docs <- tm_map(docs, toSpace, "嗎")
+docs <- tm_map(docs, toSpace, "啦")
+docs <- tm_map(docs, toSpace, "要")
+docs <- tm_map(docs, toSpace, "有")
+docs <- tm_map(docs, toSpace, "及")
+docs <- tm_map(docs, toSpace, "了")
+docs <- tm_map(docs, toSpace, "在")
+docs <- tm_map(docs, toSpace, "但")
+docs <- tm_map(docs, toSpace, "都")
+docs <- tm_map(docs, toSpace, "哈")
+docs <- tm_map(docs, toSpace, "不")
+docs <- tm_map(docs, toSpace, "與")
+docs <- tm_map(docs, toSpace, "什麼")
+docs <- tm_map(docs, toSpace, "一個")
+docs <- tm_map(docs, toSpace, "們")
+docs <- tm_map(docs, toSpace, "[a-zA-Z]")
+docs <- tm_map(docs, removePunctuation)
+docs <- tm_map(docs, removeNumbers)
+docs <- tm_map(docs, stripWhitespace)
+
+cutter = worker()
+new_user_word(cutter,"一例一休")
+
+tokenizer = function(x) {
+  segment(x,cutter)
+}
+
+freqFrame = as.data.frame(table(unlist(lapply(docs,tokenizer)))) 
+
+```
+
+#製作文字雲
+```{r}
+par(family=("Heiti TC Light"))
+wordcloud(freqFrame$Var1,freqFrame$Freq,
+          scale=c(5,0.1),min.freq=50,max.words=150,
+          random.order=TRUE, random.color=FALSE,
+          rot.per=.1, colors=brewer.pal(8, "Dark2"),
+          ordered.colors=FALSE,use.r.layout=FALSE,
+          fixed.asp=TRUE)
+```
+
+
+
+
+
+#從賴院長近300篇文中,可看出大多數的文章能和臺南臺灣有關,可推知這兩者為賴院長最關注的方面
+
+
