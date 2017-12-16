@@ -6,3 +6,5 @@ https://ryan19981110.shinyapps.io/ryan/
 作業二 ggplot2繪圖呈現:https://ntu-csx-datascience.github.io/B06305042/HW011.html
 
 作業三 文字雲:https://ntu-csx-datascience.github.io/B06305042/HW3.html
+
+作業四 https://ntu-csx-datascience.github.io/B06305042/HW4.html
