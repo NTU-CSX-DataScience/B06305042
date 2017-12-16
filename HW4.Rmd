@@ -1,0 +1,182 @@
+---
+title: "HW4"
+author: "B06305042"
+date: "2017年12月14日"
+output: html_document
+---
+#文本抓取和清理(賴院長11月的PO文)
+```{r}
+library(httr)
+library(rjson)
+library(httpuv)
+library(Rfacebook)
+library(plyr)
+library(NLP)
+library(tm)
+library(rvest)
+library(xml2)
+library(SnowballC)
+library(slam)
+library(Matrix)
+prefex = "https://graph.facebook.com/v2.10/"
+token  = "EAACEdEose0cBAN6szex0iyYzbiTMsjDvWnFic11f2RFOecoZCpMPSYsm7KFPT1BAzp0e1ZCVPA9SxJrKoiUCQYB7YDSE1Q9YJZAcO0KOMIcVvtkuPA87J7mhjSdKkMSdQyeIsYR4PiZBXgowS35BcBh0aZA2l1lnvqy5djtrdpExPdGLjPKp9Yp1ZAjZBXZAOMb5JFP013dKrwZDZD"
+number = 1
+attrs  = paste0("152472278103133/posts?limit=",number,"&until=2017-11-30&since=2017-11-1&access_token=")
+url    = paste0(prefex, attrs, token)
+res    = httr::GET(url)
+data =   httr::content(res)
+groups= matrix(unlist(data$data))
+filename = paste0(1, ".txt")
+write.table(groups,filename)
+after  = data$paging$cursors$after
+nextflg= data$paging[2]
+count=1
+while(nextflg!= "NULL"){
+  count=count+1
+  attrs  = paste0("152472278103133/posts?limit=1&until=2017-11-30&since=2017-11-1&after=",after,"&access_token=")
+  url = paste0(prefex,attrs,token)
+  nextres= httr::GET(url)
+  ndata  = httr::content(nextres)
+  ngroups= matrix(unlist(ndata$data))
+  after  = ndata$paging$cursors$after
+  nextflg = ndata$paging[3]
+  
+  filename = paste0(count, ".txt")
+  
+  write.table(ngroups,filename)
+}
+library(NLP)
+library(tm)
+library(jiebaRD)
+library(jiebaR)
+library(RColorBrewer)
+library(wordcloud)
+par(family='STKaiti')
+filenames <- list.files(getwd(), pattern="*.txt")
+files <- lapply(filenames, readLines)
+docs <- Corpus(VectorSource(files))
+toSpace <- content_transformer(function(x, pattern) {
+  return (gsub(pattern, " ", x))
+}
+)
+docs <- tm_map(docs, toSpace, "※")
+docs <- tm_map(docs, toSpace, "◆")
+docs <- tm_map(docs, toSpace, "‧")
+docs <- tm_map(docs, toSpace, "的")
+docs <- tm_map(docs, toSpace, "我")
+docs <- tm_map(docs, toSpace, "也")
+docs <- tm_map(docs, toSpace, "他")
+docs <- tm_map(docs, toSpace, "是")
+docs <- tm_map(docs, toSpace, "就")
+docs <- tm_map(docs, toSpace, "你")
+docs <- tm_map(docs, toSpace, "啊")
+docs <- tm_map(docs, toSpace, "嗎")
+docs <- tm_map(docs, toSpace, "啦")
+docs <- tm_map(docs, toSpace, "要")
+docs <- tm_map(docs, toSpace, "有")
+docs <- tm_map(docs, toSpace, "及")
+docs <- tm_map(docs, toSpace, "了")
+docs <- tm_map(docs, toSpace, "在")
+docs <- tm_map(docs, toSpace, "但")
+docs <- tm_map(docs, toSpace, "都")
+docs <- tm_map(docs, toSpace, "哈")
+docs <- tm_map(docs, toSpace, "不")
+docs <- tm_map(docs, toSpace, "與")
+docs <- tm_map(docs, toSpace, "什麼")
+docs <- tm_map(docs, toSpace, "一個")
+docs <- tm_map(docs, toSpace, "們")
+docs <- tm_map(docs, toSpace, "[a-zA-Z]")
+docs <- tm_map(docs, removePunctuation)
+docs <- tm_map(docs, removeNumbers)
+docs <- tm_map(docs, stripWhitespace)
+mixseg = worker()
+segment = c("賴清德","勞動基準法","台南","行政院","一例一休","勞基法")
+new_user_word(mixseg,segment)
+
+
+
+jieba_tokenizer=function(d){
+  unlist(segment(d[[1]],mixseg))
+}
+seg = lapply(docs, jieba_tokenizer)
+freqFrame = as.data.frame(table(unlist(seg)))
+
+d.corpus <- Corpus(VectorSource(seg))
+tdm <- TermDocumentMatrix(d.corpus, 
+                          control = list(wordLengths = c(1, Inf)))
+```
+
+#因為對於勞工問題有著極高的興趣,所以找尋和勞工有著高度關係的詞語,運用兩關鍵詞"權益""保障"進行分析
+
+```{r}
+labor = findAssocs(tdm, "勞工", 0.8)
+labor
+N = tdm$ncol
+tf <- apply(tdm, 2, sum)
+idfCal <- function(word_doc)
+{ 
+  log2( N / nnzero(word_doc) ) 
+}
+idf <- apply(tdm, 1, idfCal)
+
+
+doc.tfidf <- as.matrix(tdm)
+for(x in 1:nrow(tdm))
+{
+  for(y in 1:ncol(tdm))
+  {
+    doc.tfidf[x,y] <- (doc.tfidf[x,y] / tf[y]) * idf[x]
+  }
+}
+library(plotly)
+topID = lapply(rownames(as.data.frame(labor)), function(x) 
+  which(rownames(tdm) == x))
+topID = unlist(topID)
+plot_ly(data = as.data.frame(doc.tfidf),
+        x = as.numeric(colnames(doc.tfidf)),
+        y = doc.tfidf[topID[5],], 
+        name = rownames(doc.tfidf)[topID[5]],
+        type = "scatter", mode= "box") %>%
+  add_trace(y = doc.tfidf[topID[12],],
+            name = rownames(doc.tfidf)[topID[12]])
+```
+#第1,19,29篇是權益與保障比較有相關的篇章
+
+
+
+
+#用長條圖找尋35篇文章的相關性
+
+```{r}
+pp = (doc.tfidf != rep(0,35))
+ppid = which(row_sums(pp) != 0)
+q <- rownames(doc.tfidf[ppid,])
+all.term <- rownames(doc.tfidf)
+loc <- which(all.term %in% q)
+s.tdm <- doc.tfidf[loc,]
+cos.sim <- function(x, y)
+{ 
+  (as.vector(x) %*% as.vector(y)) / (norm(as.matrix(x)) * norm(y)) 
+}
+doc.cos <- apply(s.tdm[,1:35], 2, cos.sim,
+                 y=as.matrix(s.tdm[,35]))
+orderDoc <- doc.cos[order(doc.cos, decreasing = TRUE)]
+plot_ly(data = as.data.frame(orderDoc),
+        x = rownames(as.data.frame(orderDoc)),
+        y = orderDoc, 
+        name = rownames(doc.tfidf)[topID[3]],
+        type = "bar", mode= "box")
+```
+找尋分群現象
+```{r}
+str(doc.tfidf)
+summary(doc.tfidf)
+set.seed(35)
+result = kmeans(doc.tfidf, 2, nstart = 50)
+plot(doc.tfidf, col =(result$cluster +1) , main="K-MEAN", pch=15, cex=2)
+testtfidf = doc.tfidf
+tfidf.pca = prcomp(testtfidf)
+biplot(tfidf.pca,color=c(1,35))
+
+```
+第18,22,30,分群現象明顯
