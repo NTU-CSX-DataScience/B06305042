@@ -7,4 +7,6 @@ https://ryan19981110.shinyapps.io/ryan/
 
 作業三 文字雲:https://ntu-csx-datascience.github.io/B06305042/HW3.html
 
-作業四 https://ntu-csx-datascience.github.io/B06305042/HW4.html
+作業四:https://ntu-csx-datascience.github.io/B06305042/HW4.html
+
+作業五:https://ntu-csx-datascience.github.io/B06305042/HW5.html
