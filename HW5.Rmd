@@ -1,0 +1,64 @@
+---
+title: "HW5"
+author: "B06305042"
+date: "2017年12月17日"
+output: html_document
+---
+#本次作業分析美國兩大運動MLB NBA
+
+```{r}
+library(e1071)
+library(scales)
+library(ggplot2)
+library(reshape2)
+library(stats)
+library(jpeg)
+library(factoextra)
+MLB = read.csv("C:/Users/User/Desktop/R HW/HW5/HW5.csv")
+```
+#此篇MLB分析只討論打者方面
+
+```{r}
+Cor<-cor(MLB[,c(4,15,16,27:29)])
+Melt<-melt(Cor,varnames = c("x","y"),value.name = "relation")
+Melt<-Melt[order(Melt$relation),]
+ggplot(Melt,aes(x=x,y=y))+
+  geom_tile(aes(fill=relation))+
+  scale_fill_gradient2(low="red",mid="white",high="darkblue",guide=guide_colorbar(ticks=FALSE,barheight=10),limits=c(-1,1))+
+  theme_minimal()+
+  labs(x=NULL,y=NULL)
+```
+
+
+
+#R.G=每場平均得分 SO=被三振次數 BA=打擊率 LOB=殘壘 W=勝 L=敗
+#此圖可看出這些項目的相關性
+
+
+#ANOVA分析
+```{r}
+anova<-aov(W~R.G ,MLB)
+summary(anova)
+
+```
+#從極小的p值我推測不同群間的R.G有顯著差異
+
+
+
+#預測本球季(29場)NBA騎士隊的勝負情況(SVM)
+```{r}
+NBA = read.csv("C:/Users/User/Desktop/R HW/HW5/HW.csv")
+traindata <- NBA[1:20,c(2,5,14)]
+testdata <- NBA[21:29, c(5,14)]
+svmfit = svm(as.factor(W.L) ~ ., data = traindata, 
+             kernel = "polynomial", 
+             cost = 10, scale = FALSE)
+plot(svmfit, traindata)
+predict = predict(svmfit, testdata)
+ans = table(predict,NBA[21:29,2])
+print(ans)
+t = (ans[1,1]+ans[2,2])/sum(ans)
+print(t)
+```
+#模型精準度達0.8888889 但資料有點不足 所以準確度有待商榷
+
