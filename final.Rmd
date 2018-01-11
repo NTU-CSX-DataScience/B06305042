@@ -1,0 +1,113 @@
+---
+title: "Untitled"
+author: "B06305042"
+date: "2018年1月11日"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+require(lattice) 
+data=read.csv("coin.csv")
+#ETHER:https://etherscan.io/chart/etherprice
+#BITCOIN:https://www.coindesk.com/price/
+#RIPPLE:https://www.coingecko.com/en/price_charts/ripple/usd
+x=data$num
+y1=data$ether
+y2=data$bitcoin
+y3=data$ripple
+my.df <- data.frame(y1,y2,y3)
+
+
+#擷取2016/01/01到2017/12/20的三個虛擬貨幣資訊 分別是ether,bitcoin,ripple
+#將三種貨幣的價格作為折線圖資料(合併)
+ggplot(my.df, aes(x = x)) +
+  geom_line(aes(y = y1)) +
+  geom_line(aes(y = y2)) +
+  geom_line(aes(y = y3))
+
+#因為發現價格差距過大,無法從圖片中看出同時的漲跌狀況,因此改為分開來看
+
+
+
+xyplot(x=y1~x ,         
+       data=data,     
+       panel=function(x,y){  
+         panel.fill(col="black")        
+         panel.xyplot(x, y)             
+         panel.lmline(x, y, col="red")  
+       }
+       
+)
+
+xyplot(x=y2~x ,         
+       data=data,     
+       panel=function(x,y){  
+         panel.fill(col="black")        
+         panel.xyplot(x, y)             
+         panel.lmline(x, y, col="red")  
+       }
+       
+)
+xyplot(x=y3~x ,         
+       data=data,     
+       panel=function(x,y){  
+         panel.fill(col="black")        
+         panel.xyplot(x, y)             
+         panel.lmline(x, y, col="red")  
+       }
+       
+)
+
+#從以上3張圖可以清楚看到在400以前幾乎沒有起伏2017/02/03
+#因此以下將從400天之後開始分析
+
+
+
+x1=data$num[c(400:720)]
+y4=data$ether[c(400:720)]
+y5=data$bitcoin[c(400:720)]
+y6=data$ripple[c(400:720)]
+my.df2 <- data.frame(y4,y5,y6)
+
+
+
+ggplot(my.df2, aes(x = x1)) +
+  geom_line(aes(y = y4)) +
+  geom_line(aes(y = y5)) +
+  geom_line(aes(y = y6))
+
+
+
+
+
+xyplot(x=y4~x1 ,         
+       data=data,     
+       panel=function(x,y){  
+         panel.fill(col="black")        
+         panel.xyplot(x, y)             
+         panel.lmline(x, y, col="red")  
+       }
+       
+)
+
+xyplot(x=y5~x1 ,         
+       data=data,     
+       panel=function(x,y){  
+         panel.fill(col="black")        
+         panel.xyplot(x, y)             
+         panel.lmline(x, y, col="red")  
+       }
+       
+)
+xyplot(x=y6~x1 ,         
+       data=data,     
+       panel=function(x,y){  
+         panel.fill(col="black")        
+         panel.xyplot(x, y)             
+         panel.lmline(x, y, col="red")  
+       }
+       
+)
+#後續發展只有ether持續往上漲,其他2個皆有下滑的趨勢
+```
